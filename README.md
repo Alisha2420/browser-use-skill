@@ -2,82 +2,112 @@
 
 > **Stop fighting with snapshot→act loops.** Let AI handle complex browser automation end-to-end.
 
-[![ClawHub](https://img.shields.io/badge/ClawHub-browser--use-blue)](https://clawhub.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![ClawHub](https://img.shields.io/badge/ClawHub-browser--use-blue?style=flat-square)](https://clawhub.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+[![Browser-Use](https://img.shields.io/badge/Powered_by-Browser--Use-orange?style=flat-square)](https://github.com/browser-use/browser-use)
+[![Wiki](https://img.shields.io/badge/📖_Wiki-7_pages-purple?style=flat-square)](https://github.com/abczsl520/browser-use-skill/wiki)
 
-## The Problem
+---
 
-OpenClaw's built-in browser tool works great for simple tasks — take a screenshot, click a button. But for **multi-step workflows** (login → navigate → fill form → submit), it falls apart:
+## 😤 The Problem
 
-- 🔄 Endless snapshot→act loops, often clicking the wrong element
-- 💥 Breaks on dynamic pages (popups, redirects, lazy loading)
-- 🚫 Gets detected by anti-bot systems
-
-## The Solution
-
-This skill integrates [Browser-Use](https://github.com/browser-use/browser-use) — an AI browser agent that **sees the page like a human** and completes entire workflows autonomously.
+OpenClaw's built-in browser tool is great for simple tasks — screenshot, click a button, done. But for **multi-step workflows**, it becomes a nightmare:
 
 ```
-You: "Log into Reddit and post this article"
-Browser-Use: ✅ Opens login page → types credentials → handles CAPTCHA wait → 
-             navigates to submit → fills title & body → clicks Post → Done.
+Agent: *takes snapshot* → *clicks wrong button* → *takes snapshot* → *page changed* → 
+       *confused* → *clicks again* → *popup appeared* → *lost* → ❌ Failed
 ```
 
-## When to Use What
+Sound familiar? Login forms, dynamic pages, popups, anti-bot detection — the built-in tool wasn't designed for these.
 
-| Scenario | Built-in Tool | Browser-Use |
-|----------|:---:|:---:|
-| Screenshot / check a page | ✅ Free & fast | ❌ Overkill |
-| Click one button | ✅ | ❌ |
-| 5+ step workflow (login→fill→submit) | ❌ Breaks easily | ✅ |
-| Anti-detection needed (real Chrome) | ❌ | ✅ |
-| Batch/repeat operations | ❌ | ✅ |
+## ✅ The Solution
 
-## Install
+This skill integrates [**Browser-Use**](https://github.com/browser-use/browser-use) (38k+ ⭐) — an AI browser agent that **sees pages like a human** and completes entire workflows autonomously.
+
+```
+You:          "Log into Reddit and post this article to r/python"
+Browser-Use:  ✅ Opens login → types credentials → handles CAPTCHA wait → 
+              navigates to submit → fills title & body → clicks Post → returns URL
+```
+
+**One task in, result out.** No manual step-by-step babysitting.
+
+## ⚡ Quick Start
 
 ```bash
+# 1. Install the skill
 clawhub install browser-use
-```
 
-Or manually: copy the `browser-use/` folder to `~/.openclaw/skills/`
-
-## Setup (One-Time)
-
-```bash
+# 2. Setup Python environment (one-time)
 python3 -m venv ~/browser-use-env
 source ~/browser-use-env/bin/activate
 pip install browser-use playwright langchain-openai
 playwright install chromium
 ```
 
-## Two Modes
+Then just tell your OpenClaw agent:
 
-### Mode A: Built-in Chromium (Simple)
-Works out of the box. Some sites may detect automation.
+> *"用 browser-use 登录 Reddit 发个帖子"*
 
-### Mode B: Connect to Real Chrome (Recommended) ✅
-Uses your actual Chrome browser — **zero detection**. Sites see a real human browser.
+The skill handles everything: mode selection, script generation, execution, and error recovery.
 
-```bash
-# Quit Chrome first, then relaunch with debugging:
-/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222 &
+## 🤔 When to Use What
+
+| Scenario | Built-in `browser` | This Skill |
+|----------|:---:|:---:|
+| Take a screenshot | ✅ Free & instant | ❌ Overkill |
+| Click one button | ✅ | ❌ |
+| **5+ step workflow** (login→navigate→fill→submit) | ❌ Breaks easily | **✅ Autonomous** |
+| **Anti-bot sites** (Reddit, LinkedIn, Twitter) | ❌ Detected | **✅ Real Chrome** |
+| **Batch operations** | ❌ | **✅** |
+| **Data scraping** with complex navigation | ❌ Manual | **✅ Smart** |
+
+> **Rule of thumb:** If it takes more than 3 clicks, use Browser-Use.
+
+## 🔑 Key Features
+
+### 🎯 Smart Task Routing
+The skill knows when Browser-Use is needed vs when the built-in tool is enough. No wasted API calls.
+
+### 🔐 Secure Credential Handling
+Passwords use placeholder substitution — the LLM **never sees your real credentials**:
+```python
+agent = Agent(
+    task="Login with x_user and x_pass",
+    sensitive_data={"x_user": "real@email.com", "x_pass": "S3cret!"},
+)
 ```
 
-## Quick Example
+### 🛡️ Anti-Detection (Real Chrome Mode)
+Connect to your actual Chrome browser via CDP — sites see a real human, zero detection:
+```python
+browser = Browser(cdp_url="http://127.0.0.1:9222")
+```
+
+### ⚡ Flash Mode
+Skip LLM reasoning for simple steps — 2x faster:
+```python
+agent = Agent(task="...", flash_mode=True)
+```
+
+### 🔧 Built-in Failure Recovery
+CAPTCHA? Timeout? Anti-spam? The skill includes a complete decision tree for common failures.
+
+## 📖 Quick Example
 
 ```python
 import asyncio
 from browser_use import Agent, ChatOpenAI, Browser
 
 async def main():
-    llm = ChatOpenAI(model="gpt-4o-mini", api_key="YOUR_KEY", base_url="https://api.openai.com/v1")
+    llm = ChatOpenAI(model="gpt-4o-mini", api_key="YOUR_KEY")
     browser = Browser(cdp_url="http://127.0.0.1:9222")  # Real Chrome
     
     agent = Agent(
         task="""
         1. Go to https://news.ycombinator.com
         2. Extract the top 5 story titles and URLs
-        3. Return them as a list
+        3. Return them as a formatted list
         """,
         llm=llm, browser=browser, use_vision=True, max_steps=15,
     )
@@ -87,41 +117,45 @@ async def main():
 asyncio.run(main())
 ```
 
-## Features
+## 🎮 LLM Compatibility
 
-- 🎯 **Smart task routing** — Knows when to use Browser-Use vs built-in tool
-- 🔐 **Sensitive data handling** — Passwords never sent to LLM (placeholder substitution)
-- 🛡️ **Anti-detection** — Connect to real Chrome via CDP, undetectable
-- 📝 **Task writing guide** — Prompting best practices for reliable automation
-- 🔧 **Failure recovery** — Decision tree for CAPTCHA, timeouts, anti-spam
-- ⚡ **Flash mode** — Skip reasoning for simple tasks, 2x faster
-
-## Key Parameters
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `use_vision` | AI sees screenshots | `True` |
-| `max_steps` | Max actions | `100` |
-| `sensitive_data` | Password placeholders | `None` |
-| `flash_mode` | Skip thinking (faster) | `False` |
-| `fallback_llm` | Backup LLM on failure | `None` |
-| `allowed_domains` | Restrict navigation | `None` |
-
-## LLM Compatibility
-
-| LLM | Works | Notes |
-|-----|:---:|-------|
-| GPT-4o / 4o-mini | ✅ | Best compatibility |
-| Claude | ✅ | Works well |
+| LLM | Works | Best For |
+|-----|:---:|---------|
+| GPT-4o-mini | ✅ | **Default choice** — fast & cheap |
+| GPT-4o | ✅ | Complex reasoning tasks |
+| Claude 3.5+ | ✅ | Good alternative |
 | Gemini | ❌ | Structured output incompatible |
 
-## Links
+## 📚 Documentation
 
-- [Browser-Use Documentation](https://docs.browser-use.com)
-- [Browser-Use GitHub](https://github.com/browser-use/browser-use) (38k+ ⭐)
-- [OpenClaw](https://github.com/openclaw/openclaw)
-- [ClawHub Skills](https://clawhub.com)
+📖 **[Full Wiki →](https://github.com/abczsl520/browser-use-skill/wiki)**
 
-## License
+| Guide | What You'll Learn |
+|-------|-------------------|
+| [Getting Started](https://github.com/abczsl520/browser-use-skill/wiki/Getting-Started) | Install, setup, first automation |
+| [Mode A vs Mode B](https://github.com/abczsl520/browser-use-skill/wiki/Mode-A-vs-Mode-B) | Built-in Chromium vs Real Chrome |
+| [Task Writing Guide](https://github.com/abczsl520/browser-use-skill/wiki/Task-Writing-Guide) | Write prompts that work first try |
+| [Sensitive Data](https://github.com/abczsl520/browser-use-skill/wiki/Sensitive-Data) | Secure password handling + 2FA |
+| [Real-World Examples](https://github.com/abczsl520/browser-use-skill/wiki/Real-World-Examples) | Copy-paste recipes |
+| [Troubleshooting](https://github.com/abczsl520/browser-use-skill/wiki/Troubleshooting) | Fix common issues |
+| [FAQ](https://github.com/abczsl520/browser-use-skill/wiki/FAQ) | Quick answers |
 
-MIT
+## 🔗 Related
+
+- [Browser-Use](https://github.com/browser-use/browser-use) — The underlying browser AI framework (38k+ ⭐)
+- [OpenClaw](https://github.com/openclaw/openclaw) — The AI agent platform this skill runs on
+- [ClawHub](https://clawhub.com) — Discover more OpenClaw skills
+
+## 🤝 Contributing
+
+Found a bug? Have an idea? [Open an issue](https://github.com/abczsl520/browser-use-skill/issues) or submit a PR!
+
+## 📄 License
+
+[MIT](LICENSE) — Use it however you want.
+
+---
+
+<p align="center">
+  <b>⭐ If this skill saved you time, consider starring the repo — it helps others find it!</b>
+</p>
