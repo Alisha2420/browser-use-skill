@@ -144,7 +144,9 @@ asyncio.run(main())
 
 - [Browser-Use](https://github.com/browser-use/browser-use) — The underlying browser AI framework (38k+ ⭐)
 - [OpenClaw](https://github.com/openclaw/openclaw) — The AI agent platform this skill runs on
-- [ClawHub](https://clawhub.com) — Discover more OpenClaw skills
+- [Bug Audit](https://github.com/abczsl520/bug-audit-skill) — Dynamic bug hunting (200+ patterns)
+- [Debug Methodology](https://github.com/abczsl520/debug-methodology) — Root-cause debugging for AI agents
+- [Game Quality Gates](https://github.com/abczsl520/game-quality-gates) — 12 universal game dev quality checks
 
 ## 🤝 Contributing
 
